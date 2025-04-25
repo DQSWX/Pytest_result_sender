@@ -1,0 +1,26 @@
+[project]
+name = "Pytest_result_sender"
+version = "0.1.0"
+description = "Joe's try"
+authors = [
+    {name = "Joe", email = "jadeyan1987@163.com"},
+]
+dependencies = ["pytest>=8.3.5"]
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+# 插件的入口点
+[project.entry-points.pytest11]
+result_log="pytest_result_sender.plugin"
+
+# 源码的位置
+[tool.pdm.build]
+package-dir = "src"
+
+[tool.pdm]
+distribution = true
