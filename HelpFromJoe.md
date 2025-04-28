@@ -1,9 +1,10 @@
 ### 1.创建项目
 
 - 选择项目目录
+
 - 创建venv
-  - vs code不能Add  Project，只能打开文件夹，后续通过pdm初始化项目虽然也会生成venv，但后续`plugin.__file__`的路径指向并不是pyproject.toml所配置的路径，所以会导致修改项目中的plugin.py而无法生效的问题
-  - 使用PyCharm创建项目，会自带生成venv目录，就没有上述问题
+  - vs code不能Add  Project，只能打开文件夹，后续通过pdm初始化项目虽然也会生成venv
+  - 使用PyCharm创建项目，会自带生成venv目录
 
 - 安装PDM
 
@@ -38,6 +39,8 @@
       # 配置卸载完毕后执行，所有测试用例执行后执行
       print(f"{datetime.now()} pytest结束执行")
   ```
+
+- 在VS code中`plugin.__file__`的路径指向并不是pyproject.toml所配置的路径，所以会导致修改项目中的plugin.py而无法生效的问题，PyCharm则正常。
 
 - 添加依赖
 
