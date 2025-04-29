@@ -1,6 +1,9 @@
 from datetime import datetime,timedelta
 
 import pytest
+import smtplib
+from email.mime.text import MIMEText
+from email.utils import formataddr
 
 data = {
     "passed": 0,
@@ -24,9 +27,42 @@ def pytest_unconfigure():
     # 配置卸载完毕后执行，所有测试用例执行后执行
     data['end_time'] = datetime.now()
     data['duration'] = data['end_time']-data['start_time']
+    data['pass-ratio'] = data['passed'] / data['total'] * 100
+    data['pass-ratio'] = f"{data['pass-ratio']:.2f}%"
     assert timedelta(seconds=3) > data['duration'] > timedelta(seconds=2.5)
     assert data['total'] == 3
     assert data['passed'] == 2
     assert data['failed'] == 1
-    # print(f"{datetime.now()} pytest结束执行")
-    # print(data)
+    assert data['pass-ratio'] == '66.67%'
+    send_email()
+
+# 配置参数
+SMTP_SERVER = "smtp.163.com"
+SMTP_PORT = 465
+SENDER_EMAIL = "jadeyan1987@163.com"
+AUTH_CODE = "AKfk9qk8kHkeLHnx"  # 替换为实际授权码
+RECEIVER_EMAIL = "474626958@qq.com"
+
+def send_email():
+    test_result = f"""
+    测试时间：{data['end_time']}
+    用例数量：{data['total']} 
+    执行时长：{data['duration']} 
+    测试通过：{data['passed']} 
+    测试失败：{data['failed']} 
+    测试通过率：{data['pass-ratio']}
+    """
+    # 构建邮件对象
+    msg = MIMEText(test_result, "plain", "utf-8")
+    msg["From"] = formataddr(["自动化测试系统", SENDER_EMAIL])
+    msg["To"] = RECEIVER_EMAIL
+    msg["Subject"] = "【测试报告】2025-04-28 测试结果"
+
+    try:
+        # 使用 SSL 加密连接
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
+            server.login(SENDER_EMAIL, AUTH_CODE)
+            server.sendmail(SENDER_EMAIL, [RECEIVER_EMAIL], msg.as_string())
+        print("邮件发送成功")
+    except Exception as e:
+        print(f"发送失败: {str(e)}")
