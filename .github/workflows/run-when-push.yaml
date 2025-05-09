@@ -1,18 +1,34 @@
-name: Try CI from joe
+name: CI with PDM
+
 on: [push]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    environment: test
+
     steps:
-      - uses: actions/checkout@v4              # 检出代码
-      - uses: actions/setup-node@v4            # 配置 Node.js
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: 20
-      - run: npm ci && npm test               # 安装依赖并测试
-        working-directory: ${{ github.workspace }}
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4       # 保存测试报告
+          python-version: '3.12'  # 根据 pdm.lock 中 requires_python 设置版本
+
+      - name: Install PDM
+        run: |          pip install pdm
+
+      - name: Install dependencies
+        run: |          pdm sync --no-dev  # 安装 lock 文件中的依赖
+        env:
+          PDM_IGNORE_SAVED_PYTHON: true  # 忽略锁定的 Python 版本，避免冲突
+
+      - name: Run tests with pytest
+        run: |          pdm run pytest  # 使用 pdm 执行 pytest 命令
+
+      - name: Upload Test Results (optional)
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: ./test-output/
+          path: test-output/
