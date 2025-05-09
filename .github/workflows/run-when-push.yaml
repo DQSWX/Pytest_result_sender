@@ -24,7 +24,7 @@ jobs:
         run: |
           pdm sync --prod  # 安装 lock 文件中的依赖
         env:
-          PDM_IGNORE_SAVED_PYTHON: true  # 忽略锁定的 Python 版本，避免冲突
+          PDM_IGNORE_SAVED_PYTHON: true  # 忽略锁定的  Python 版本，避免冲突
 
       - name: Run tests with pytest
         run: |    
