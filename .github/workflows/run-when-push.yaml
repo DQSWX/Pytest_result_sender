@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pdm sync --no-dev  # 安装 lock 文件中的依赖
+          pdm sync --prod  # 安装 lock 文件中的依赖
         env:
           PDM_IGNORE_SAVED_PYTHON: true  # 忽略锁定的 Python 版本，避免冲突
 
