@@ -28,7 +28,9 @@ jobs:
 
       - name: Run tests with pytest
         run: |    
-          pdm run pytest || true  # 使用 pdm 执行 pytest 命令 || 即使测试失败也返回 0 
+          # pdm run pytest || true  # 使用 pdm 执行 pytest 命令 || 即使测试失败也返回 0 
+          mkdir -p test-output
+                    pdm run pytest --junitxml=test-output/results.xml --html=test-output/report.html || true # 增加了报告输出
 
       - name: Upload Test Results (optional)
         uses: actions/upload-artifact@v4
